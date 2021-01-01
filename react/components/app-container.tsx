@@ -2,34 +2,22 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Head from "next/head";
 import Container from "react-bootstrap/Container";
 import { NoteList } from "./note-list";
-import { NoteDetail } from "./note-detail";
-import { firebase } from "../pages/_app";
+import { useStore } from "../stores/data.store";
 import { useEffect } from "react";
-// import { firebase } from "../config";
+import { getNotes } from "../actions";
 
 export const AppContainer = () => {
-  let ref: any | null = null;
+  const { state, dispatch } = useStore();
   useEffect(() => {
-    ref = firebase.database().ref("notes");
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const notes = [];
-    const snapshot = await ref.once("value");
-    const value = snapshot.val();
-    if (!value) {
-      return;
-    }
-    Object.keys(value).forEach((key) => {
-      const content = value[key]["TEST"];
-      notes.push({
-        key,
-        description: content,
+    async function _getNotes() {
+      const notes = await getNotes();
+      dispatch({
+        type: "init",
+        payload: notes,
       });
-    });
-    console.log(notes);
-  };
+    }
+    _getNotes();
+  }, []);
 
   return (
     <Container>
