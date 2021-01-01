@@ -10,10 +10,6 @@ const reducer = (note, { type, payload }) => {
       notes = payload;
     case "getNotes":
       return notes;
-    case "create":
-      return notes;
-    case "edit":
-      return notes;
   }
 };
 
